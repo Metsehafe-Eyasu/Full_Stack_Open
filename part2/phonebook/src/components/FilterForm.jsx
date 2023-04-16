@@ -1,11 +1,7 @@
-import { useState } from "react";
-const FilterForm = ({ persons, setFilteredPersons }) => {
-  const [filter, setFilter] = useState("");
+const FilterForm = ({ filter, setFilter }) => {
   const handleFilter = (e) => {
+    console.log(e.target.value);
     setFilter(e.target.value);
-    setFilteredPersons(
-      persons.filter((person) => new RegExp(filter, "i").test(person.name))
-    );
   };
   return (
     <form>
