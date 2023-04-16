@@ -7,11 +7,13 @@ import InputForm from "./components/InputForm";
 import Persons from "./components/Persons";
 
 import personService from "./services/persons";
+import Notification from "./components/Notification";
 
 function App() {
   // States
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("");
+  const [notif, setNotif] = useState({ message: null, type: null });
 
   useEffect(() => {
     personService.getAll().then((returnedData) => {
@@ -38,16 +40,28 @@ function App() {
     };
     // Check if person already exists
     if (prevPerson) {
-      if (confirm(`${newName} is already added to phonebook. Replace the old number?`)) {
+      if (
+        confirm(
+          `${newName} is already added to phonebook. Replace the old number?`
+        )
+      ) {
         updatePerson(prevPerson.id, personObject);
       }
-    return true;
+      return true;
     }
 
     // Add new person
     personService.create(personObject).then((personData) => {
       setPersons(persons.concat(personData));
       setFilter("");
+
+      setNotif({
+        message: `Added '${newName}'`,
+        type: "success",
+      });
+      setTimeout(() => {
+          setNotif({ message: null, type: null });
+      }, 5000);
     });
     return true;
   };
@@ -60,8 +74,15 @@ function App() {
       })
       .catch((err) => {
         console.log(err.message);
-        alert(`the person '${newName}' was already deleted from server`);
         setPersons(persons.filter((p) => p.id !== id));
+        setNotif({
+          message: `the person '${newName}' was already deleted from server`,
+          type: "error",
+        });
+        setTimeout(() => {
+            setNotif({ message: null, type: null });
+        }, 5000);
+        // alert(`the person '${newName}' was already deleted from server`);
       });
   };
 
@@ -69,11 +90,14 @@ function App() {
     <div>
       <div>
         <h2>Phonebook</h2>
+        <Notification message={notif.message} type={notif.type} />
         <FilterForm filter={filter} setFilter={setFilter} />
         <h3>Add new</h3>
         <InputForm handleSubmit={handleSubmit} />
         <h3>Numbers</h3>
-        <Persons persons={persons} setPersons={setPersons} filter={filter} />
+        <Persons persons={persons} setPersons={setPersons} filter={filter} setNotif={setNotif}/>
+
+        <br />
       </div>
     </div>
   );

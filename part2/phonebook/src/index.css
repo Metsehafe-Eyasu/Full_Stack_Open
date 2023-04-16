@@ -1,0 +1,25 @@
+.success {
+    color: green;
+    border-color: green;
+    background-color: lightgreen;
+}
+.error {
+    color: red;
+    border-color: red;
+    background-color: lightcoral;
+}
+.modified {
+    color: yellow;
+    border-color: yellow;
+    background-color: lightyellow;
+}
+
+.notification {
+    font-size: 20px;
+    font-weight: bold;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: lightgrey;
+}
