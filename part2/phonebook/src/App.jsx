@@ -35,8 +35,7 @@ function App() {
     const prevPerson = persons.find((person) => person.name === newName);
     const personObject = {
       name: newName,
-      phone: newPhone,
-      id: prevPerson ? prevPerson.id : persons.length + 1,
+      phone: newPhone
     };
     // Check if person already exists
     if (prevPerson) {
@@ -45,6 +44,9 @@ function App() {
           `${newName} is already added to phonebook. Replace the old number?`
         )
       ) {
+        personService.update(prevPerson.id, personObject).then((returnedPerson) => {
+
+        })
         updatePerson(prevPerson.id, personObject);
       }
       return true;
