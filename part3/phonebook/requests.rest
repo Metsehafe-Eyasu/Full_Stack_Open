@@ -1,0 +1,26 @@
+GET https://phonebook-r3w2.onrender.com/api/persons/6447c80174c0356f7aade72a
+
+###
+
+GET http://localhost:3001/api/persons
+
+###
+GET https://phonebook-r3w2.onrender.com/info
+###
+GET https://phonebook-r3w2.onrender.com/api/persons/4
+
+###
+PUT http://localhost:3001/api/persons/644928aac0fe4857e8aec133
+Content-Type: application/json
+
+{
+    "name": "Neigh Hellas",
+    "phone": "040-696969"
+}
+
+###
+DELETE https://phonebook-r3w2.onrender.com/api/persons/1
+###
+GET http://localhost:3001/api/persons
+###
+DELETE http://localhost:3001/api/persons/644a56ffa2c786239a119053
