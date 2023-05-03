@@ -35,7 +35,7 @@ function App() {
     const prevPerson = persons.find((person) => person.name === newName);
     const personObject = {
       name: newName,
-      phone: newPhone
+      phone: newPhone,
     };
     // Check if person already exists
     if (prevPerson) {
@@ -44,27 +44,40 @@ function App() {
           `${newName} is already added to phonebook. Replace the old number?`
         )
       ) {
-        personService.update(prevPerson.id, personObject).then((returnedPerson) => {
-
-        })
+        personService
+          .update(prevPerson.id, personObject)
+          .then((returnedPerson) => {});
         updatePerson(prevPerson.id, personObject);
       }
       return true;
     }
 
     // Add new person
-    personService.create(personObject).then((personData) => {
-      setPersons(persons.concat(personData));
-      setFilter("");
+    personService
+      .create(personObject)
+      .then((personData) => {
+        setPersons(persons.concat(personData));
+        setFilter("");
 
-      setNotif({
-        message: `Added '${newName}'`,
-        type: "success",
-      });
-      setTimeout(() => {
+        setNotif({
+          message: `Added '${newName}'`,
+          type: "success",
+        });
+        setTimeout(() => {
           setNotif({ message: null, type: null });
-      }, 5000);
-    });
+        }, 5000);
+      })
+      .catch((error) => {
+        console.log(error);
+        setNotif({
+          message: error.response.data.error,
+          type: "error",
+        });
+        setTimeout(() => {
+          setNotif({ message: null, type: null });
+        }, 5000);
+        return false;
+      });
     return true;
   };
 
@@ -82,7 +95,7 @@ function App() {
           type: "error",
         });
         setTimeout(() => {
-            setNotif({ message: null, type: null });
+          setNotif({ message: null, type: null });
         }, 5000);
         // alert(`the person '${newName}' was already deleted from server`);
       });
@@ -97,7 +110,12 @@ function App() {
         <h3>Add new</h3>
         <InputForm handleSubmit={handleSubmit} />
         <h3>Numbers</h3>
-        <Persons persons={persons} setPersons={setPersons} filter={filter} setNotif={setNotif}/>
+        <Persons
+          persons={persons}
+          setPersons={setPersons}
+          filter={filter}
+          setNotif={setNotif}
+        />
 
         <br />
       </div>
