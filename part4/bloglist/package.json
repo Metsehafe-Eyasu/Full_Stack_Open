@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=developmentnodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose",
-    "lint" : "eslint ."
+    "lint" : "eslint . --fix"
   },
   "author": "Metsehafe-Eyasu",
   "license": "MIT",
