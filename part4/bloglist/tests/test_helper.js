@@ -1,4 +1,7 @@
 const Bloglist = require('../models/bloglist')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
+
 const initialBlogs = [
   {
     title: 'React patterns',
@@ -43,6 +46,17 @@ const blogsInDB = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const createTestUser = async () => {
+  const passwordHash = await bcrypt.hash('password1', 10)
+  const user = new User({
+    username: 'jane_doe',
+    name: 'Jane Doe',
+    passwordHash
+  })
+  const savedUser = await user.save()
+  return savedUser
+}
+
 module.exports = {
-  initialBlogs, blogsInDB
+  initialBlogs, blogsInDB, createTestUser
 }
