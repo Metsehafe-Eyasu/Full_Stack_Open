@@ -9,4 +9,8 @@ Modern Web Development Course: Fullstack
 
 > Part 3 - Complete ✔
 
-> Part 4 - In progress  . . .
+> Part 4 - Complete ✔
+
+> Part 5 - Complete ✔
+
+> Part 6 - In progress  . . .
