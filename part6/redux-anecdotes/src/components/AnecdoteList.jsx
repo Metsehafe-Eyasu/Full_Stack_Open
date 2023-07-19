@@ -17,7 +17,7 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
   const anecdotes = useSelector(state => state)
 
-  const sortedAnecdotes = anecdotes.sort((a, b) => b.votes - a.votes)
+  const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
   return (
     <ul>
       {sortedAnecdotes.map(anecdote =>
