@@ -15,12 +15,18 @@ describe('anecdoteReducer', () => {
         votes: 0
       }
     ]
+    // const action = {
+    //   type: 'NEW_ANECDOTE',
+    //   data: {
+    //     content: 'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    //     id: 3,
+    //     votes: 0
+    //   }
+    // }
     const action = {
-      type: 'NEW_ANECDOTE',
-      data: {
-        content: 'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-        id: 3,
-        votes: 0
+      type: 'anecdotes/createAnecdote',
+      payload: {
+        content: 'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.'
       }
     }
     deepFreeze(state)
@@ -47,11 +53,15 @@ describe('anecdoteReducer', () => {
         votes: 0
       }
     ]
+    // const action = {
+    //   type: 'VOTE',
+    //   data: {
+    //     id: 2
+    //   }
+    // }
     const action = {
-      type: 'VOTE',
-      data: {
-        id: 2
-      }
+      type: 'anecdotes/voteAnecdote',
+      payload: 2
     }
     deepFreeze(state)
     const newState = anecdoteReducer(state, action)
