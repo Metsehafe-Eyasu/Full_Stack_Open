@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const bloglistSchema = new mongoose.Schema({
   title: {
     type: String,
