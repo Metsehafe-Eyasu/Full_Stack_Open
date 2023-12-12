@@ -6,13 +6,15 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import "./App.css";
+import { useDispatch } from "react-redux";
+import { setNotification } from "./lib/redux/slices/notificationSlice";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [User, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
+  const dispatch = useDispatch();
 
   const blogFormRef = useRef(null);
 
@@ -35,19 +37,16 @@ function App() {
     try {
       const returnedBlog = await blogService.create(blogObject);
       setBlogs(blogs.concat(returnedBlog));
-      setMessage({
+      dispatch(setNotification({
         message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
         type: "success",
-      });
+      }, 5))
     } catch (exception) {
-      setMessage({
+      dispatch(setNotification({
         message: exception.response.data.error,
         type: "error",
-      });
+      }, 5));
     }
-    setTimeout(() => {
-      setMessage(null);
-    }, 5000);
     blogFormRef.current.toggleVisibility();
   };
 
@@ -61,13 +60,10 @@ function App() {
           .sort((a, b) => b.likes - a.likes),
       );
     } catch (exception) {
-      setMessage({
+      dispatch(setNotification({
         message: exception.response.data.error,
         type: "error",
-      });
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      }, 5));
     }
   };
 
@@ -75,19 +71,16 @@ function App() {
     try {
       await blogService.remove(id);
       setBlogs(blogs.filter((blog) => blog.id !== id));
-      setMessage({
+      dispatch(setNotification({
         message: "Blog removed successfully",
         type: "success",
-      });
+      }, 5));
     } catch (exception) {
-      setMessage({
+      dispatch(setNotification({
         message: exception.response.data.error,
         type: "error",
-      });
+      }, 5));
     }
-    setTimeout(() => {
-      setMessage(null);
-    }, 5000);
   };
 
   const blogForm = () => {
@@ -110,13 +103,10 @@ function App() {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setMessage({
+      dispatch(setNotification({
         message: exception.response.data.error,
         type: "error",
-      });
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      }, 5));
     }
   };
 
@@ -158,7 +148,7 @@ function App() {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={message} />
+      <Notification />
       {User === null && loginForm()}
       {User !== null && (
         <div>
