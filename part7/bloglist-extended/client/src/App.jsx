@@ -6,80 +6,102 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import "./App.css";
-import { useDispatch } from "react-redux";
-import { setNotification } from "./lib/redux/slices/notificationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setNotification } from "./lib/redux/slices/notificationReducer";
+import { setUser, removeUser } from "./lib/redux/slices/userReducer";
+import {
+  initializeBlogs,
+  createBlog,
+  likeBlog,
+  removeBlog,
+} from "./lib/redux/slices/blogReducer";
 
 function App() {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [User, setUser] = useState(null);
   const dispatch = useDispatch();
-
+  const User = useSelector((state) => state.user);
+  const blogs = useSelector((state) => state.blog);
+  
   const blogFormRef = useRef(null);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(setUser(user))
       blogService.setToken(user.token);
     }
   }, []);
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
+    dispatch(initializeBlogs())
   }, []);
 
   const addBlog = async (blogObject) => {
     try {
-      const returnedBlog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(returnedBlog));
-      dispatch(setNotification({
-        message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-        type: "success",
-      }, 5))
+      dispatch(createBlog(blogObject));
+      dispatch(
+        setNotification(
+          {
+            message: `a new blog ${blogObject.title} by ${blogObject.author} added`,
+            type: "success",
+          },
+          5,
+        ),
+      );
     } catch (exception) {
-      dispatch(setNotification({
-        message: exception.response.data.error,
-        type: "error",
-      }, 5));
+      dispatch(
+        setNotification(
+          {
+            message: exception.response.data.error,
+            type: "error",
+          },
+          5,
+        ),
+      );
     }
     blogFormRef.current.toggleVisibility();
   };
 
   const updateBlog = async (id, blogObject) => {
     try {
-      const returnedBlog = await blogService.update(id, blogObject);
-      console.log(returnedBlog);
-      setBlogs(
-        blogs
-          .map((blog) => (blog.id !== id ? blog : returnedBlog))
-          .sort((a, b) => b.likes - a.likes),
-      );
+      dispatch(likeBlog(id, blogObject));
     } catch (exception) {
-      dispatch(setNotification({
-        message: exception.response.data.error,
-        type: "error",
-      }, 5));
+      dispatch(
+        setNotification(
+          {
+            message: exception.response.data.error,
+            type: "error",
+          },
+          5,
+        ),
+      );
     }
   };
 
-  const removeBlog = async (id) => {
+  const deleteBlog = async (id) => {
     try {
-      await blogService.remove(id);
-      setBlogs(blogs.filter((blog) => blog.id !== id));
-      dispatch(setNotification({
-        message: "Blog removed successfully",
-        type: "success",
-      }, 5));
+      dispatch(removeBlog(id));
+      dispatch(
+        setNotification(
+          {
+            message: "Blog removed successfully",
+            type: "success",
+          },
+          5,
+        ),
+      );
     } catch (exception) {
-      dispatch(setNotification({
-        message: exception.response.data.error,
-        type: "error",
-      }, 5));
+      dispatch(
+        setNotification(
+          {
+            message: exception.response.data.error,
+            type: "error",
+          },
+          5,
+        ),
+      );
     }
   };
 
@@ -98,15 +120,19 @@ function App() {
         username,
         password,
       });
-      setUser(user);
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      dispatch(setUser(user));
       setUsername("");
       setPassword("");
     } catch (exception) {
-      dispatch(setNotification({
-        message: exception.response.data.error,
-        type: "error",
-      }, 5));
+      dispatch(
+        setNotification(
+          {
+            message: exception.response.data.error,
+            type: "error",
+          },
+          5,
+        ),
+      );
     }
   };
 
@@ -141,8 +167,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogappUser");
-    setUser(null);
+    dispatch(removeUser());
   };
 
   return (
@@ -153,7 +178,6 @@ function App() {
       {User !== null && (
         <div>
           <p>
-            {" "}
             {User.name} logged in
             <button onClick={handleLogout}>logout</button>
           </p>
@@ -163,7 +187,7 @@ function App() {
               key={blog.id}
               blog={blog}
               updateBlog={updateBlog}
-              removeBlog={removeBlog}
+              removeBlog={deleteBlog}
             />
           ))}
         </div>
